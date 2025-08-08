@@ -1,5 +1,5 @@
 package runhandler
 
 type RunHandler interface {
-	Run() error
+	Run(cmds []string) error
 }

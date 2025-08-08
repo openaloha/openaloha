@@ -3,7 +3,7 @@ package sync
 import (
 	"openaloha.io/openaloha/openaloha-sidecar/config"
 	synchandler "openaloha.io/openaloha/openaloha-sidecar/sync/sync_handler"
-	syncfunc "openaloha.io/openaloha/openaloha-sidecar/sync/sync_func"
+	"openaloha.io/openaloha/openaloha-sidecar/runfunc"
 )
 
 // SyncFacade is the facade for the sync service
@@ -12,10 +12,8 @@ type SyncFacade struct {
 	syncHandlers []synchandler.SyncHandler
 }
 
-
-
 // Sync is the method to init and refresh code
-func (f *SyncFacade) Sync(initFunc syncfunc.InitFunc, refreshFunc syncfunc.RefreshFunc) error {
+func (f *SyncFacade) Sync(initFunc runfunc.InitFunc, refreshFunc runfunc.RefreshFunc) error {
 	// init sync handler
 	f.syncHandlers = initSyncHandler()
 
