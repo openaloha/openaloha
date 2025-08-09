@@ -1,10 +1,10 @@
-package synchandler
+package handler
 
 import (
 	"fmt"
 	"os"
 	"time"
-
+	"openaloha.io/openaloha/openaloha-sidecar/sync/factory"
 	"github.com/go-git/go-git/v6"
 	"github.com/go-git/go-git/v6/plumbing"
 	"github.com/go-git/go-git/v6/plumbing/object"
@@ -15,6 +15,10 @@ import (
 
 // GitSyncHandler is the handler for the git sync service
 type GitSyncHandler struct {
+}
+
+func init(){
+	factory.Register(constant.SYNC_TYPE_GIT, &GitSyncHandler{})
 }
 
 // Init is the method to initialize code
@@ -78,11 +82,6 @@ func (h *GitSyncHandler) Refresh(workspace string, syncConfig config.SyncConfig,
 	}
 	
 	return nil
-}
-
-// IsSupport is the method to check support the syncType
-func (h *GitSyncHandler) IsSupport(syncType string) bool {
-	return constant.SYNC_TYPE_GIT == syncType
 }
 
 // GitClone is the method to git clone

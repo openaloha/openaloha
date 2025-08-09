@@ -1,4 +1,4 @@
-package synchandler
+package handler
 
 import (
 	"openaloha.io/openaloha/openaloha-sidecar/config"
@@ -18,7 +18,4 @@ type SyncHandler interface {
 
 	// Refresh is the method to refresh code
 	Refresh(workspace string, syncConfig config.SyncConfig, refreshFunc runfunc.RefreshFunc) error
-
-	// check support the syncType
-	IsSupport(syncType string) bool
 }

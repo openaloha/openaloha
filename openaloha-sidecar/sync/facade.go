@@ -2,23 +2,21 @@ package sync
 
 import (
 	"openaloha.io/openaloha/openaloha-sidecar/config"
-	synchandler "openaloha.io/openaloha/openaloha-sidecar/sync/sync_handler"
+	_ "openaloha.io/openaloha/openaloha-sidecar/internal/sync/handler"
 	"openaloha.io/openaloha/openaloha-sidecar/runfunc"
+	"openaloha.io/openaloha/openaloha-sidecar/sync/factory"
+	"openaloha.io/openaloha/openaloha-sidecar/sync/handler"
 )
 
 // SyncFacade is the facade for the sync service
 type SyncFacade struct {
 	Config       config.Config
-	syncHandlers []synchandler.SyncHandler
 }
 
 // Sync is the method to init and refresh code
 func (f *SyncFacade) Sync(initFunc runfunc.InitFunc, refreshFunc runfunc.RefreshFunc) error {
-	// init sync handler
-	f.syncHandlers = initSyncHandler()
-
 	// get sync handler by sync type
-	syncHandler, err := getSyncHandler(f.syncHandlers, f.Config.Sync.Type)
+	syncHandler, err := getSyncHandler( f.Config.Sync.Type)
 	if err != nil {
 		return err
 	}
@@ -36,21 +34,12 @@ func (f *SyncFacade) Sync(initFunc runfunc.InitFunc, refreshFunc runfunc.Refresh
 	return nil
 }
 
-// init sync handler
-func initSyncHandler() []synchandler.SyncHandler {
-	var syncHandlers []synchandler.SyncHandler
-	// init sync handler
-	syncHandlers = append(syncHandlers, &synchandler.GitSyncHandler{})
-
-	return syncHandlers
-}
 
 // get sync handler by sync type
-func getSyncHandler(syncHandlers []synchandler.SyncHandler, syncType string) (synchandler.SyncHandler, error) {
-	for _, syncHandler := range syncHandlers {
-		if syncHandler.IsSupport(syncType) {
-			return syncHandler, nil
-		}
+func getSyncHandler(syncType string) (handler.SyncHandler, error) {
+	syncHandler, err := factory.New(syncType)
+	if err != nil {
+		return nil, err
 	}
-	return nil, nil
+	return syncHandler, nil
 }
